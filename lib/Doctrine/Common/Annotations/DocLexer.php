@@ -97,6 +97,7 @@ final class DocLexer extends AbstractLexer
             '[a-z_\\\][a-z0-9_\:\\\]*[a-z_][a-z0-9_]*',
             '(?:[+-]?[0-9]+(?:[\.][0-9]+)*)(?:[eE][+-]?[0-9]+)?',
             '"(?:""|[^"])*+"',
+            'r".*"',
         ];
     }
 
@@ -117,6 +118,12 @@ final class DocLexer extends AbstractLexer
 
         if ($value[0] === '"') {
             $value = str_replace('""', '"', substr($value, 1, strlen($value) - 2));
+
+            return self::T_STRING;
+        }
+
+        if (isset($value[1]) && $value[0] === 'r' && $value[1] === '"') {
+            $value = substr($value, 2, strlen($value) - 3);
 
             return self::T_STRING;
         }
